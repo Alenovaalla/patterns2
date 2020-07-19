@@ -1,1 +1,1 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/2jgflr2a8khl3nh3?svg=true)](https://ci.appveyor.com/project/Alenovaalla/api-ci)
+[![Build status](https://ci.appveyor.com/api/projects/status/i45u0wa0etr0pgdt?svg=true)](https://ci.appveyor.com/project/Alenovaalla/selectors)
