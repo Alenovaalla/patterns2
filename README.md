@@ -1,1 +1,1 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/i45u0wa0etr0pgdt?svg=true)](https://ci.appveyor.com/project/Alenovaalla/selectors)
+[![Build status](https://ci.appveyor.com/api/projects/status/kxs005s6lrh26sef?svg=true)](https://ci.appveyor.com/project/Alenovaalla/2-2-selenide)
