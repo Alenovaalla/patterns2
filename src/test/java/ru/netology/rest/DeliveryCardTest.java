@@ -13,7 +13,7 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
 
 class DeliveryCardTest {
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.mm.yyyy");
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     String date = formatter.format(LocalDateTime.now().plusDays(3));
 
     @Test
