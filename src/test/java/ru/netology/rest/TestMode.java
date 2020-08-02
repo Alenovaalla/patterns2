@@ -1,49 +1,59 @@
 package ru.netology.rest;
 
+import com.codeborne.selenide.Condition;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Keys;
 
 import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selectors.withText;
 import static com.codeborne.selenide.Selenide.*;
-import static ru.netology.rest.DataGenerator.generateUser;
+import static ru.netology.rest.DataGenerator.RegistrationInfo.*;
 
 
-public class DeliveryOrder {
-    Registration user = generateUser();
+public class TestMode {
 
-    @Test
-    void sholdPlanningCardDeliveryOrder() {
-        open("http://localhost:7777");
-        $("[data-test-id=city] input").setValue(user.getCity());
-        $("[data-test-id=date] input").sendKeys(Keys.CONTROL + "a", Keys.DELETE);
-        $("[data-test-id=date] input").setValue(user.getDate());
-        $("[data-test-id=name] input").setValue(user.getName());
-        $("[data-test-id=phone] input").setValue(user.getPhoneNumber());
-        $("[data-test-id=agreement]").click();
-        $$("[role=button]").find(exactText("Запланировать")).click();
-        $("[data-test-id=success-notification]").waitUntil(visible, 15000);
-        $("[data-test-id=success-notification] .notification__content").shouldHave(text("Встреча успешно запланирована на")).shouldHave(text(user.getDate()));
+    public void login (String login, String password) {
+        open("http://localhost:9999");
+        $("[data-test-id=login] input").setValue(login);
+        $("[data-test-id=password] input").setValue(password);
+        $("[data-test-id=action-login]").click();
     }
 
     @Test
-    void sholdRescheduleCardDelivery() {
-        open("http://localhost:7777");
-        $("[data-test-id=city] input").setValue(user.getCity());
-        $("[data-test-id=date] input").sendKeys(Keys.CONTROL + "a", Keys.DELETE);
-        $("[data-test-id=date] input").setValue(user.getDate());
-        $("[data-test-id=name] input").setValue(user.getName());
-        $("[data-test-id=phone] input").setValue(user.getPhoneNumber());
-        $("[data-test-id=agreement]").click();
-        $$("[role=button]").find(exactText("Запланировать")).click();
-        $("[data-test-id=success-notification]").waitUntil(visible, 15000);
-        $("[data-test-id=date] input").sendKeys(Keys.CONTROL + "a", Keys.DELETE);
-        $("[data-test-id=date] input").setValue(user.getDate());
-        $$("[role=button]").find(exactText("Запланировать")).click();
-        $(withText("У вас уже запланирована встреча на другую дату. Перепланировать?")).waitUntil(visible, 15000);
-        $$("div.notification__content > button").find(exactText("Перепланировать")).click();
-        $("[data-test-id=success-notification]").waitUntil(visible, 15000);
-        $("[data-test-id=success-notification] .notification__content").shouldHave(text("Встреча успешно запланирована на")).shouldHave(text(user.getDate()));
+    public void shouldPassWithActiveValid() {
+        Registration user = generateValidRegistration("en", false);
+        login(user.getLogin(), user.getPassword());
+        $(byText("Личный кабинет")).waitUntil(Condition.visible, 15000);
     }
 
+    @Test
+    public void shouldErrorIfNotRegisteredUser() {
+        Registration user = generateRegistration("en", false);
+        login(user.getLogin(), user.getPassword());
+        $(withText("Неверно указан логин или пароль")).waitUntil(Condition.visible, 15000);
+    }
+
+    @Test
+    public void shouldErrorIfUserBlocked() {
+        Registration user = generateValidRegistration("en", true);
+        login(user.getLogin(), user.getPassword());
+        $(withText("Пользователь заблокирован")).waitUntil(Condition.visible, 15000);
+    }
+
+    @Test
+    public void shouldErrorIfInvalidLogin() {
+        Registration user = generateInvalidLogin("en", false);
+        login(user.getLogin(), user.getPassword());
+        $(withText("Неверно указан логин или пароль")).waitUntil(Condition.visible, 15000);
+    }
+
+    @Test
+    public void shouldGetErrorIfInvalidPassword() {
+        Registration user = generateInvalidPassword("en", false);
+        login(user.getLogin(), user.getPassword());
+        $(withText("Неверно указан логин или пароль")).waitUntil(Condition.visible, 15000);
+    }
 }
+
+

@@ -1,41 +1,91 @@
 package ru.netology.rest;
 import com.github.javafaker.Faker;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.filter.log.LogDetail;
+import io.restassured.http.ContentType;
+import io.restassured.specification.RequestSpecification;
+import org.junit.jupiter.api.BeforeAll;
 import java.util.Locale;
-import java.util.Random;
-
+import static io.restassured.RestAssured.given;
+import ru.netology.rest.Registration;
 
 public class DataGenerator {
 
     public DataGenerator() {
     }
 
-    public static String getCity() {
-        String[] city = new String[]{
-                "Анапа", "Белгород", "Выборг", "Грозный", "Есентуки", "Иркутск", "Йошкар-Ола",
-                "Калуга", "Липецк", "Москва", "Новосибирск", "Омск", "Пермь", "Петрозаводск",
-                "Петропавловск-Камчатский", "Псков", "Рыбинск", "Санкт-Петербург", "Тверь", "Уфа", "Хабаровск"};
-        Random random = new Random();
-        int index = random.nextInt(city.length);
-        return city[index];
+    private static final RequestSpecification requestSpec = new RequestSpecBuilder()
+            .setBaseUri("http://localhost")
+            .setPort(9999)
+            .setAccept(ContentType.JSON)
+            .setContentType(ContentType.JSON)
+            .log(LogDetail.ALL)
+            .build();
+
+
+@BeforeAll
+    public static void setUpAll(Registration user) {
+        given()
+                .spec(requestSpec)
+                .body(user)
+                .when()
+                .post("/api/system/users")
+                .then()
+                .statusCode(200);
     }
 
+    public static class RegistrationInfo {
+        private RegistrationInfo() {
+        }
 
-    public static String getDate(int daysToAdd) {
-        LocalDate Date = LocalDate.now().plusDays(daysToAdd);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        return Date.format(formatter);
-    }
+        public static String userName(String Locale) {
+            Faker faker = new Faker(new Locale(Locale));
+            return faker.name().username();
+        }
 
-    public static Registration generateUser() {
-        Faker faker = new Faker(new Locale("ru"));
-        return new Registration(
-                getCity(),
-                getDate(3),
-                faker.name().lastName() + " " + faker.name().firstName(),
-                faker.phoneNumber().phoneNumber());
+        public static String userPassword(String Locale) {
+            Faker faker = new Faker(new Locale(Locale));
+            return faker.internet().password();
+        }
 
+
+        public static Registration generateRegistration(String locale, boolean isBlocked) {
+            return new Registration(
+                    userName(locale),
+                    userPassword(locale),
+                    (isBlocked) ? "blocked" : "active");
+        }
+
+        public static Registration generateValidRegistration(String locale, boolean isBlocked) {
+            Registration user = generateRegistration(locale, isBlocked);
+            setUp(user);
+            return user;
+        }
+
+        public static Registration generateInvalidLogin(String locale, boolean isBlocked) {
+            String password = userPassword(locale);
+            Registration user = new Registration(
+                    "vasya",
+                    password,
+                    (isBlocked) ? "blocked" : "active");
+            setUp(user);
+            return new Registration(
+                    "vera",
+                    password,
+                    (isBlocked) ? "blocked" : "active");
+        }
+
+        public static Registration generateInvalidPassword(String locale, boolean isBlocked) {
+            String login = userName(locale);
+            Registration user = new Registration(
+                    login,
+                    "password",
+                    (isBlocked) ? "blocked" : "active");
+            setUpUser(user);
+            return new Registration(
+                    login,
+                    "a",
+                    (isBlocked) ? "blocked" : "active");
+        }
     }
 }

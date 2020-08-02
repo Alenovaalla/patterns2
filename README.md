@@ -1,1 +1,1 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/dj6haa11w5d4uo1q?svg=true)](https://ci.appveyor.com/project/Alenovaalla/patterns)
+[![Build status](https://ci.appveyor.com/api/projects/status/wvv0314p092uxk5w?svg=true)](https://ci.appveyor.com/project/Alenovaalla/patterns2)
