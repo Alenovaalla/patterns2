@@ -1,1 +1,1 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/kxs005s6lrh26sef?svg=true)](https://ci.appveyor.com/project/Alenovaalla/2-2-selenide)
+[![Build status](https://ci.appveyor.com/api/projects/status/dj6haa11w5d4uo1q?svg=true)](https://ci.appveyor.com/project/Alenovaalla/patterns)
