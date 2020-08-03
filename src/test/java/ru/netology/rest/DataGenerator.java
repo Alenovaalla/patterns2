@@ -22,8 +22,6 @@ public class DataGenerator {
             .log(LogDetail.ALL)
             .build();
 
-
-@BeforeAll
     public static void setUpAll(Registration user) {
         given()
                 .spec(requestSpec)
@@ -58,7 +56,7 @@ public class DataGenerator {
 
         public static Registration generateValidRegistration(String locale, boolean isBlocked) {
             Registration user = generateRegistration(locale, isBlocked);
-            setUp(user);
+            setUpAll(user);
             return user;
         }
 
@@ -68,7 +66,7 @@ public class DataGenerator {
                     "vasya",
                     password,
                     (isBlocked) ? "blocked" : "active");
-            setUp(user);
+            setUpAll(user);
             return new Registration(
                     "vera",
                     password,
@@ -81,7 +79,7 @@ public class DataGenerator {
                     login,
                     "password",
                     (isBlocked) ? "blocked" : "active");
-            setUpUser(user);
+            setUpAll(user);
             return new Registration(
                     login,
                     "a",
